@@ -114,7 +114,7 @@ module.exports = {
                     msg.edit(Embed);
                 })})
                 break;
-            case "set":
+            case "id":
                 let channelID;
                 let messageID;
                 switch (args.length) {

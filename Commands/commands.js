@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 
 module.exports = {
-    name: 'parancsok',
+    name: 'commands',
     description: 'writes out the commands',
     admin : false,
     roles : [],

@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 
 module.exports = {
-    name: 'commands',
+    name: 'commandsOld',
     description: 'writes out the commands',
     execute(message, args, setup){
         const Embed = new Discord.MessageEmbed();
