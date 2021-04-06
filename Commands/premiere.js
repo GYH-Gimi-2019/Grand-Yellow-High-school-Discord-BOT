@@ -3,21 +3,23 @@ const Discord = require('discord.js');
 module.exports = {
     name: 'premiere',
     description: 'sets bot\'s activity to STREAMING with a specific URL',
-    async execute(message, args, setup, bot) {
-        if (args[1] !== undefined) {
-            if (args[1] !== "off") {
+    async execute(interaction, args, setup, bot) {
+        switch (args[0].name) {
+            case "off":
+                bot.user.setPresence({status: "online", activity: {name: setup.STATUS, type: setup.ACTIVITY}});
+                bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
+                    content: "Premiere turned off"
+                }}});
+                break;
+            case "on":
                 bot.user.setPresence({
                     status: "online",
-                    activity: {name: setup.STATUS, type: "STREAMING", url: args[1]}
+                    activity: {name: setup.STATUS, type: "STREAMING", url: args[0].options[0].value}
                 });
-            } else {
-                bot.user.setPresence({status: "online", activity: {name: setup.STATUS, type: setup.ACTIVITY}});
-            }
-        } else {
-            message.channel.send("Invalid parameter!");
+                bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
+                    content: `Premiere set to  ${args[0].options[0].value}`
+                }}});
+                break;
         }
-        await message.channel.messages.fetch({limit: 1}).then(messages => {
-            message.channel.bulkDelete(messages);
-        });
     }
 }

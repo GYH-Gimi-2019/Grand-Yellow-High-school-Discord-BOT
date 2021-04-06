@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 module.exports = {
     name: 'quote',
     description: 'picks a random quote',
-    async execute(message, args, database, setup){
+    async execute(interaction, args, database, setup, bot){
         const quotes = database.QUOTES;
         const randomElement = quotes[Math.floor(Math.random() * quotes.length)];
         console.log(randomElement);
@@ -12,12 +12,11 @@ module.exports = {
             .setDescription(randomElement.QUOTE)
             .setFooter(`From S${randomElement.SEASON}E${randomElement.EPISODE} "${episodeSearch(parseInt(randomElement.SEASON), parseInt(randomElement.EPISODE))}"`)
             .setColor('RANDOM');
-        message.channel.send(Embed);
-        await message.channel.messages.fetch({ limit: 1 }).then(messages => {
-            message.channel.bulkDelete(messages);
-        });
+        bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
+            embeds: [Embed]
+        }}});
 
-        function isInSeriesGuild() {return message.guild.id === setup.SERIES_GUILD_ID;}
+        function isInSeriesGuild() {return interaction.guild_id === setup.SERIES_GUILD_ID;}
 
         function seasonSearch(season) {
             for (let index = 0; index < database.EPISODES.length; index++) {

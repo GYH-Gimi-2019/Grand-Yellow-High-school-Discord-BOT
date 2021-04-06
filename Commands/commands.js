@@ -6,77 +6,109 @@ module.exports = {
     admin : false,
     roles : [],
     guilds : [],
-    execute(message, args, setup, commands, prefix) {
+    execute(interaction, args, setup, commands, prefix, bot) {
         console.log("TEST");
         let Embed;
-        switch (args.length) {
-            case 1:
-                Embed = new Discord.MessageEmbed()
-                    .setTitle('A parancsok, amiket tudsz használni')
-                    .setDescription("`[]` = általad meghatározott érték. Ezt a paraméterek megadásakor NE írd be!")
-                    .setColor('RANDOM')
-                    .setTimestamp();
-                for (let i = 0; i < commands.MAIN.length; i++) {
-                    replaceMain(i)
+        if (!args) {
+            Embed = new Discord.MessageEmbed()
+                .setTitle('A parancsok, amiket tudsz használni')
+                .setDescription("`[]` = általad meghatározott érték. Ezt a paraméterek megadásakor NE írd be!")
+                .setColor('RANDOM')
+                .setTimestamp();
+            for (let i = 0; i < commands.MAIN.length; i++) {
+                replaceMain(i)
+            }
+            if (isInSeriesGuild()) {
+                for (let i = 0; i < commands.INTHISGUILD.length; i++) {
+                    replaceInThisGuild(i)
                 }
-                if (isInSeriesGuild()) {
-                    for (let i = 0; i < commands.INTHISGUILD.length; i++) {
-                        replaceInThisGuild(i)
-                    }
-                }
-                message.channel.send(Embed);
-                break;
-            case 2:
-                if (args[1] === "admin" && hasAdmin() && isInSeriesGuild()) {
-                    Embed = new Discord.MessageEmbed()
-                    .setTitle('A parancsok, amiket tudsz használni (admin)')
-                    .setDescription("`[]` = általad meghatározott érték. Ezt a paraméterek megadásakor NE írd be!")
-                    .setColor('RANDOM')
-                    .setTimestamp();
-                    for (let i = 0; i < commands.ADMIN.length; i++) {
-                        replaceAdmin(i)
+            }
+            bot.api.interactions(interaction.id, interaction.token).callback.post({data: {
+                type: 4,
+                data: { embeds: [Embed]
+            }}});
+        } else {
+            if (args[0].value === "admin") {
+                if (hasAdmin()) {
+                    if (isInSeriesGuild()) {
+                        Embed = new Discord.MessageEmbed()
+                            .setTitle('A parancsok, amiket tudsz használni (admin)')
+                            .setDescription("`[]` = általad meghatározott érték. Ezt a paraméterek megadásakor NE írd be!")
+                            .setColor('RANDOM')
+                            .setTimestamp();
+                        for (let i = 0; i < commands.ADMIN.length; i++) {
+                            replaceAdmin(i)
+                        }
+                    } else {
+                        bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
+                            content: "Ezt a parancsot itt nem használhatod!"
+                        }}});
+                        return;
                     }
                 } else {
-                    Embed = new Discord.MessageEmbed()
-                        .setTitle(`\`${args[1]}\` parancs leírása:`)
-                        .setDescription("`[]` = általad meghatározott érték. Ezt a paraméterek megadásakor NE írd be!")
-                        .setColor('RANDOM')
-                        .setTimestamp();
+                    bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
+                        content: "Nincs jogosultságod a parancs használatához!"
+                    }}});
+                    return;
+                }
+            } else {
+                Embed = new Discord.MessageEmbed()
+                    .setTitle(`\`${args[0].value}\` parancs leírása:`)
+                    .setDescription("`[]` = általad meghatározott érték. Ezt a paraméterek megadásakor NE írd be!")
+                    .setColor('RANDOM')
+                    .setTimestamp();
 
-                    for (let i = 0; i < commands.MAIN.length; i++) {
-                        if (args[1] === commands.MAIN[i].name.split(" ")[0] && commands.MAIN[i].command) {
-                            replaceMain(i);
-                        }
+                for (let i = 0; i < commands.MAIN.length; i++) {
+                    if (args[0].value === commands.MAIN[i].name.split(" ")[0] && commands.MAIN[i].command) {
+                        replaceMain(i);
                     }
-                    if (isInSeriesGuild()) {
-                        for (let i = 0; i < commands.INTHISGUILD.length; i++) {
-                            if (args[1] === commands.INTHISGUILD[i].name.split(" ")[0] && commands.INTHISGUILD[i].command) {
-                                replaceInThisGuild(i);
-                            }
-                        }
-                        if (hasAdmin()) {
-                            for (let i = 0; i < commands.ADMIN.length; i++) {
-                                console.log(args[1])
-                                console.log(commands.ADMIN[i].name.split(" ")[0])
-                                console.log(commands.ADMIN[i].command)
-                                if (args[1] === commands.ADMIN[i].name.split(" ")[0] && commands.ADMIN[i].command) {
-                                    console.log("boi");
-                                    replaceAdmin(i);
-                                }
-                            }
+                }
+
+                for (let i = 0; i < commands.INTHISGUILD.length; i++) {
+                    if (args[0].value === commands.INTHISGUILD[i].name.split(" ")[0] && commands.INTHISGUILD[i].command) {
+                        if (isInSeriesGuild()) {
+                            replaceInThisGuild(i);
+                        } else {
+                            bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
+                                content: "Ezt a parancsot itt nem használhatod!"
+                            }}});
+                            return;
                         }
                     }
                 }
-                message.channel.send(Embed);
-                break;
+                for (let i = 0; i < commands.ADMIN.length; i++) {
+                    if (args[0].value === commands.ADMIN[i].name.split(" ")[0] && commands.ADMIN[i].command) {
+                        if (hasAdmin()) {
+                            if (isInSeriesGuild()) {
+                                replaceAdmin(i);
+                            } else {
+                                bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
+                                    content: "Ezt a parancsot itt nem használhatod!"
+                                }}});
+                                return;
+                            }
+                        } else {
+                            bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
+                                content: "Nincs jogosultságod a parancs használatához!"
+                            }}});
+                            return;
+                        }
+                    }
+                }
+            }
         }
+
+        bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
+            embeds: [Embed]
+        }}});
+
 
         function replace(i, type) {
             console.log(commands[type][i].name);
             switch (commands[type][i].name) {
                 
             }
-            Embed.addField((commands[type][i].command ? `**\`${prefix + commands[type][i].name}\`**` : commands[type][i].name), commands[type][i].value);
+            Embed.addField((commands[type][i].command ? `**\`${"/" + commands[type][i].name}\`**` : commands[type][i].name), commands[type][i].value);
             function valueReplace(from, to) {
                 commands[type][i].value = commands[type][i].value.replace(`{replace${from}}`, to);
             }
@@ -94,7 +126,7 @@ module.exports = {
             replace(i, "INTHISGUILD");
         }
 
-        function isInSeriesGuild() {return message.guild.id === setup.SERIES_GUILD_ID;}
-        function hasAdmin() {return message.member.hasPermission("ADMINISTRATOR");}
+        function isInSeriesGuild() {return interaction.guild_id === setup.SERIES_GUILD_ID;}
+        function hasAdmin() {return bot.guilds.cache.get(interaction.guild_id).members.cache.get(interaction.member.user.id).hasPermission("ADMINISTRATOR");}
     }
 }

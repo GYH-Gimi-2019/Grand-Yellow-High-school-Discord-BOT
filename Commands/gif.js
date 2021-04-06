@@ -3,12 +3,11 @@ const Discord = require('discord.js');
 module.exports = {
     name: 'gif',
     description: 'picks a random GIF',
-    async execute(message, args, database) {
+    async execute(interaction, args, database, bot) {
         const gifs = database.GIFS;
         const randomElement = gifs[Math.floor(Math.random() * gifs.length)];
-        message.channel.send(randomElement);
-        await message.channel.messages.fetch({ limit: 1 }).then(messages => {
-            message.channel.bulkDelete(messages);
-        });
+        bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
+            content: randomElement
+        }}});
     }
 }

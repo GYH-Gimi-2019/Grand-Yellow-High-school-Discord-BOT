@@ -12,6 +12,7 @@ const fs = require('fs');
 const { Console } = require('console');
 let database = require(setup.DATABASE_PATH);
 let commands = require(setup.COMMANDS_DB_PATH);
+let slash_commands = require(setup.SLASH_COMMANDS_PATH);
 
 let now = new Date();
 
@@ -22,9 +23,102 @@ for (const file of commandFiles) {
     bot.commands.set(command.name, command);
 }
 
-bot.on('ready', () => {
+bot.on('ready', async () => {
     console.log(`${bot.user.tag} bot is now active (${monthToString(now.getMonth() + 1)} ${now.getDate()} ${now.getFullYear()} ${now.getHours() < 10 ? 0 : ""}${now.getHours()}:${now.getMinutes() < 10 ? 0 : ""}${now.getMinutes()}:${now.getSeconds() < 10 ? 0 : ""}${now.getSeconds()})`);
     bot.user.setPresence({status: "online", activity: {name: setup.STATUS, type: setup.ACTIVITY}});
+    bot.channels.cache.get(setup.LOG_CHANNEL).send("Restarted...");
+    /*for (let i = 0; i < setup.SLASH_COMMAND_GUILDS.length; i++) {
+        console.log("guild: " + setup.SLASH_COMMAND_GUILDS[i])
+        for (let j = 0; j < slash_commands.MAIN.length; j++) {
+            console.log(slash_commands.MAIN[j])
+            await bot.api.applications(bot.user.id).guilds(setup.SLASH_COMMAND_GUILDS[i]).commands.post({
+                data: slash_commands.MAIN[j],
+            });
+        }
+        console.log("done")
+    }*/
+    /*for (let i = 0; i < slash_commands.INTHISGUILD.length; i++) {
+        await bot.api.applications(bot.user.id).guilds(setup.SERIES_GUILD_ID).commands.post({
+            data: slash_commands.INTHISGUILD[i]
+        });
+    }
+    for (let i = 0; i < slash_commands.ADMIN.length; i++) {
+        await bot.api.applications(bot.user.id).guilds(setup.SERIES_GUILD_ID).commands.post({
+            data: slash_commands.ADMIN[i]
+        });
+    }
+    for (let j = 0; j < slash_commands.MAIN.length; j++) {
+        console.log(slash_commands.MAIN[j])
+        await bot.api.applications(bot.user.id).commands.post({
+            data: slash_commands.MAIN[j],
+        });
+    }*/
+    //await bot.api.applications(bot.user.id).guilds(setup.SERIES_GUILD_ID).commands("828727258449182790").delete();
+    console.log(await bot.api.applications(bot.user.id).guilds(setup.SERIES_GUILD_ID).commands.get());
+
+});
+
+bot.ws.on('INTERACTION_CREATE', async (interaction) => {
+    const command = interaction.data.name.toLowerCase();
+    const args = interaction.data.options;
+    console.log(interaction.data.options);
+
+    switch (command) {
+        case setup.HELP_COMMAND:
+            bot.commands.get('commands').execute(await interaction, args, setup, commands, prefix, bot);
+            break;
+        case "quote":
+            bot.commands.get('quote').execute(await interaction, args, database, setup, bot);
+            break;
+        case "gif":
+            bot.commands.get('gif').execute(await interaction, args, database, bot);
+            break;
+        case "episodes":
+            bot.commands.get('episodes').execute(await interaction, args, database, setup, bot);
+            break;
+        case "fandom": case "website": case "youtube": case "characters": case "evolution":
+            bot.commands.get('link').execute(await interaction, args, database, bot, command.toUpperCase());
+            break;
+        case "script":
+            bot.commands.get('script').execute(await interaction, args, database, bot);
+            break;
+        case "voices":
+            if ((isSentBy("Ben") || isSentBy("Tuzsi")) && isInSeriesGuild(bot.guilds.cache.get(interaction.guild_id))) {
+                setSetup();
+                await bot.commands.get('voices').execute(await interaction, args, database, setup, bot).then(() => {setSetup();});
+            } else {
+                bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
+                    content: "Nincs jogosultságod a parancs használatához!"
+                }}});
+            }
+            break;
+        case "premiere":
+            if (hasAdmin() && (isInSeriesGuild(bot.guilds.cache.get(interaction.guild_id)))) {
+                bot.commands.get('premiere').execute(await interaction, args, setup, bot);
+            } else {
+                bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
+                    content: "Nincs jogosultságod a parancs használatához!"
+                }}});
+            }
+            break;
+        case "notify":
+            if (hasAdmin() && isInSeriesGuild(bot.guilds.cache.get(interaction.guild_id))) {
+                bot.commands.get('notify').execute(await interaction, args, database, setup, bot);
+            } else {
+                bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
+                    content: "Nincs jogosultságod a parancs használatához!"
+                }}});
+            }
+            break;
+        default:
+            bot.api.interactions(interaction.id, interaction.token).callback.post({ data: { type: 4, data: {
+                content: "```json\n" + JSON.stringify(interaction, null, 2) + "\n```"
+            }}});
+            break;
+    }
+    function isSentBy(nickname) {return bot.guilds.cache.get(interaction.guild_id).members.cache.get(interaction.member.user.id).nickname === nickname}
+    function hasAdmin() {return bot.guilds.cache.get(interaction.guild_id).members.cache.get(interaction.member.user.id).hasPermission("ADMINISTRATOR");}
+
 });
 
 bot.on('message', async (message) => {
@@ -34,51 +128,6 @@ bot.on('message', async (message) => {
     let args = message.content.split(' ');
     let requiredPrefix = isDM(message.guild) ? "" : prefix;
     switch (args[0].toLowerCase()) {
-        case `${requiredPrefix}quote`:
-            bot.commands.get('quote').execute(await message, args, database, setup);
-            break;
-        case `${requiredPrefix}gif`:
-            bot.commands.get('gif').execute(await message, args, database);
-            break;
-        case `${requiredPrefix}fandom`:
-            bot.commands.get('link').execute(await message, args, database, linkType());
-            break;
-        case `${requiredPrefix}website`:
-            bot.commands.get('link').execute(await message, args, database, linkType());
-            break;
-        case `${requiredPrefix}youtube`:
-            bot.commands.get('link').execute(await message, args, database, linkType());
-            break;
-        case `${requiredPrefix}characters`:
-            bot.commands.get('link').execute(await message, args, database, linkType());
-            break;
-        case `${requiredPrefix}evolution`:
-            bot.commands.get('link').execute(await message, args, database, linkType());
-            break;
-        case `${requiredPrefix}episodes`:
-            bot.commands.get('episodes').execute(await message, args, database, setup);
-            break;
-        case `${requiredPrefix}script`:
-            if (isInSeriesGuild(message.guild) || isDM(message.guild))
-            bot.commands.get('script').execute(await message, args, database);
-            break;
-        case `${requiredPrefix}premiere`:
-            if (hasAdmin() && (isInSeriesGuild(message.guild) || isDM(message.guild)))
-                bot.commands.get('premiere').execute(await message, args, setup, bot);
-            break;
-        case `${requiredPrefix}commands`:
-            bot.commands.get('commands').execute(await message, args, setup, commands, prefix);
-            break;
-        case `${requiredPrefix}notify`:
-            if (!isDM(message.guild) && hasAdmin() && isInSeriesGuild(message.guild))
-            bot.commands.get('notify').execute(await message, args, database, setup);
-            break;
-        case `${requiredPrefix}voices`:
-            if (!isDM(message.guild) && (isSentBy("Ben") || isSentBy("Tuzsi")) && isInSeriesGuild(message.guild)) {
-                setSetup();
-                await bot.commands.get('voices').execute(await message, args, database, setup, bot).then(() => {setSetup();});
-            }
-            break;
         case `${requiredPrefix}database`:
             if (!isDM(message.guild) && hasAdmin() && isInSeriesGuild(message.guild)) {
                 switch (args.length) {
@@ -96,7 +145,6 @@ bot.on('message', async (message) => {
     }
 
     function isSentBy(nickname) {return message.guild.members.cache.get(message.author.id).nickname === nickname}
-    function linkType() {return args[0].toLowerCase().replace(requiredPrefix, "").toUpperCase()}
 });
 
 bot.on('messageReactionAdd', (reaction, user) => {
