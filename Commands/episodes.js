@@ -13,7 +13,7 @@ module.exports = {
         for (let i = 0; i < episodes.length; i++) {
             Embed.addField('\u200B', `__**Season ${episodes[i].SEASON}**__`);
             for (let j = 0; j < episodes[i].EPISODES.length; ++j) {
-                Embed.addField(`Episode ${episodes[i].EPISODES[j].EPISODE}`, `[${episodes[i].EPISODES[j].TITLE}](${episodes[i].EPISODES[j].URL})`, true);
+                Embed.addField(`Episode ${episodes[i].EPISODES[j].EPISODE}${episodes[i].EPISODES[j].published ? "" : " _(soon)_"}`, `[${episodes[i].EPISODES[j].TITLE}](${episodes[i].EPISODES[j].URL})`, true);
             }
             if ((episodes[i].EPISODES.length - 2) % 3 === 0) Embed.addField('\u200B', '\u200B', true);
         }
