@@ -12,7 +12,7 @@ module.exports = {
                     script = fs.readFileSync(`../src/scripts/s${args[0].options[0].value}e${args[0].options[1].value}.txt`, 'utf8');
                 } catch (e) {
                     bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                        content: "Érvénytelen paraméter!"
+                        content: "Invalid parameter!"
                     }}});
                     return;
                 }
@@ -53,13 +53,13 @@ module.exports = {
                     bot.users.cache.get(interaction.member.user.id).send(`S${args[0].options[0].value}E${args[0].options[1].value} script`, {files: [`../src/scripts/full/${database.SCRIPT_FILES[`S${args[0].options[0].value}E${args[0].options[1].value}`]}`]});
                 } catch (e) {
                     bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                        content: "Érvénytelen paraméter!"
+                        content: "Invalid parameter!"
                     }}});
                 }
         }
 
         bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                    content: `${bot.users.cache.get(interaction.member.user.id)}, nézd meg, mit küldtem DM-ben!`
+                    content: `${bot.users.cache.get(interaction.member.user.id)}, look what I've sent you in DM!`
                 }}}).then(() => {
             setTimeout(() => {
                 bot.channels.cache.get(interaction.channel_id).messages.fetch({limit: 1}).then(messages => {

@@ -15,7 +15,7 @@ module.exports = {
                     foundUser = bot.guilds.cache.get(interaction.guild_id).emojis.cache.find(r => r.name === getEmojiName(characters[i]));
                     if (!foundUser) {
                         bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                            content: "Érvénytelen paraméter!"
+                            content: "Invalid parameter!"
                         }}});
                         return;
                     }
@@ -48,7 +48,7 @@ module.exports = {
                     foundUser = bot.guilds.cache.get(interaction.guild_id).emojis.cache.find(r => r.name === getEmojiName(characters[i]));
                     if (!foundUser) {
                         bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                            content: "Érvénytelen paraméter!"
+                            content: "Invalid parameter!"
                         }}});
                         return;
                     }
@@ -81,7 +81,7 @@ module.exports = {
                         case 1:
                             if (Number(args[0].options[i].value) > 12 || Number(args[0].options[i].value) < 1) {
                                 bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                                    content: "Érvénytelen paraméter!"
+                                    content: "Invalid parameter!"
                                 }}});
                                 return;
                             }
@@ -89,7 +89,7 @@ module.exports = {
                         case 2:
                             if (Number(Number(args[0].options[i].value) !== new Date(args[0].options[i - 2].value, args[0].options[i - 1].value - 1, args[0].options[i].value, 0, 0, 0, 0).getDate())) {
                                 bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                                    content: "Érvénytelen paraméter!"
+                                    content: "Invalid parameter!"
                                 }}});
                                 return;
                             }
@@ -97,7 +97,7 @@ module.exports = {
                         case 3:
                             if (Number(args[0].options[i].value) > 23 || Number(args[0].options[i].value) < 0) {
                                 bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                                    content: "Érvénytelen paraméter!"
+                                    content: "Invalid parameter!"
                                 }}});
                                 return;
                             }
@@ -105,7 +105,7 @@ module.exports = {
                         case 4:
                             if (Number(args[0].options[i].value) > 59 || Number(args[0].options[i].value) < 0) {
                                 bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                                    content: "Érvénytelen paraméter!"
+                                    content: "Invalid parameter!"
                                 }}});
                                 return;
                             }
@@ -142,7 +142,7 @@ module.exports = {
                     messageID = args[0].options[0].value;
                 } else {
                     bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                        content: "Érvénytelen paraméter!"
+                        content: "Invalid parameter!"
                     }}});
                     return;
                 }
@@ -167,19 +167,19 @@ module.exports = {
                                 });
                             } else {
                                 bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                                    content: "Érvénytelen paraméter!"
+                                    content: "Invalid parameter!"
                                 }}});
                             }
                         }).catch(() => bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                            content: "Érvénytelen paraméter!"
+                            content: "Invalid parameter!"
                         }}}));
                     } else {
                         bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                            content: "Érvénytelen paraméter!"
+                            content: "Invalid parameter!"
                         }}});
                     }
                 }).catch(() => bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                    content: "Érvénytelen paraméter!"
+                    content: "Invalid parameter!"
                 }}}));
                 break;
             case "new":
@@ -191,7 +191,7 @@ module.exports = {
                         case 3:
                             if (Number(args[0].options[i].value) > 12 || Number(args[0].options[i].value) < 1) {
                                 bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                                    content: "Érvénytelen paraméter!"
+                                    content: "Invalid parameter!"
                                 }}});
                                 return;
                             }
@@ -199,7 +199,7 @@ module.exports = {
                         case 4:
                             if (Number(Number(args[0].options[i].value) !== new Date(args[0].options[i-2].value, args[0].options[i-1].value-1, args[0].options[i].value, 0, 0, 0, 0).getDate())) {
                                 bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                                    content: "Érvénytelen paraméter!"
+                                    content: "Invalid parameter!"
                                 }}});
                                 return;
                             }
@@ -207,7 +207,7 @@ module.exports = {
                         case 5:
                             if (Number(args[0].options[i].value) > 23 || Number(args[0].options[i].value) < 0) {
                                 bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                                    content: "Érvénytelen paraméter!"
+                                    content: "Invalid parameter!"
                                 }}});
                                 return;
                             }
@@ -215,7 +215,7 @@ module.exports = {
                         case 6:
                             if (Number(args[0].options[i].value) > 59 || Number(args[0].options[i].value) < 0) {
                                 bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                                    content: "Érvénytelen paraméter!"
+                                    content: "Invalid parameter!"
                                 }}});
                                 return;
                             }
@@ -227,7 +227,7 @@ module.exports = {
                     foundUser = bot.guilds.cache.get(interaction.guild_id).emojis.cache.find(r => r.name === getEmojiName(characters[i]));
                     if (!foundUser) {
                         bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                            content: "Érvénytelen paraméter!"
+                            content: "Invalid parameter!"
                         }}});
                         return;
                     }

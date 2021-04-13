@@ -138,7 +138,7 @@ bot.on('message', async (message) => {
                         whichToSet(args[1], message);
                         break;
                     default:
-                        message.channel.send("Érvénytelen paraméter!");
+                        message.channel.send("Invalid parameter!");
                         break;
                 }
             }
@@ -401,7 +401,7 @@ function whichToSet(variable, message) {
             if (message) successfulSet(message);
             break;
         default:
-            if (message) message.channel.send("Érvénytelen paraméter!");
+            if (message) message.channel.send("Invalid parameter!");
             break;
     }
 }
