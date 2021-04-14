@@ -21,7 +21,7 @@ module.exports = {
             });
             bot.users.cache.get(interaction.member.user.id).send(foundUsers.length === 0 ? "There's no one to notify!" : `${foundUsers.join(", ")} ${foundUsers.length === 1 ? "has" : "have"} been notified`);
             bot.api.interactions(interaction.id, interaction.token).callback.post({data: { type: 4, data: {
-                        content: `${bot.users.cache.get(interaction.member.user.id)}, nézd meg, mit küldtem DM-ben!`
+                        content: `${bot.users.cache.get(interaction.member.user.id)}, look what I've sent you in DM!`
                     }}}).then(() => {
                 setTimeout(() => {
                     bot.channels.cache.get(interaction.channel_id).messages.fetch({limit: 1}).then(messages => {
