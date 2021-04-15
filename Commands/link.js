@@ -3,8 +3,8 @@ const Discord = require('discord.js');
 module.exports = {
     name: 'link',
     description: 'writes out the command link' ,
-    async execute(interaction, args, database, bot, page) {
-        const data = database.PAGES[page];
+    async execute(interaction, args, database, bot, command) {
+        const data = database.PAGES[command.toUpperCase()];
         const Embed = new Discord.MessageEmbed()
             .setAuthor(data.TITLE, data.IMAGE_URL, data.URL)
             .setColor('RANDOM')

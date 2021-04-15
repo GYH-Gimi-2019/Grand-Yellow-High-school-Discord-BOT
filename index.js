@@ -77,7 +77,7 @@ bot.ws.on('INTERACTION_CREATE', async (interaction) => {
             bot.commands.get('episodes').execute(await interaction, args, database, setup, bot);
             break;
         case "fandom": case "website": case "youtube": case "characters": case "evolution":
-            bot.commands.get('link').execute(await interaction, args, database, bot, command.toUpperCase());
+            bot.commands.get('link').execute(await interaction, args, database, bot, command);
             break;
         case "script":
             bot.commands.get('script').execute(await interaction, args, database, bot);
