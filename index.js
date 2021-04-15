@@ -28,14 +28,11 @@ bot.on('ready', async () => {
     bot.user.setPresence({status: "online", activity: {name: setup.STATUS, type: setup.ACTIVITY}});
     bot.channels.cache.get(setup.LOG_CHANNEL).send("Restarted...");
     /*for (let i = 0; i < setup.SLASH_COMMAND_GUILDS.length; i++) {
-        console.log("guild: " + setup.SLASH_COMMAND_GUILDS[i])
         for (let j = 0; j < slash_commands.MAIN.length; j++) {
-            console.log(slash_commands.MAIN[j])
             await bot.api.applications(bot.user.id).guilds(setup.SLASH_COMMAND_GUILDS[i]).commands.post({
                 data: slash_commands.MAIN[j],
             });
         }
-        console.log("done")
     }*/
     /*for (let i = 0; i < slash_commands.INTHISGUILD.length; i++) {
         await bot.api.applications(bot.user.id).guilds(setup.SERIES_GUILD_ID).commands.post({
@@ -48,20 +45,16 @@ bot.on('ready', async () => {
         });
     }
     for (let j = 0; j < slash_commands.MAIN.length; j++) {
-        console.log(slash_commands.MAIN[j])
         await bot.api.applications(bot.user.id).commands.post({
             data: slash_commands.MAIN[j],
         });
     }*/
     //await bot.api.applications(bot.user.id).guilds(setup.SERIES_GUILD_ID).commands("828727258449182790").delete();
-    console.log(await bot.api.applications(bot.user.id).guilds(setup.SERIES_GUILD_ID).commands.get());
-
 });
 
 bot.ws.on('INTERACTION_CREATE', async (interaction) => {
     const command = interaction.data.name.toLowerCase();
     const args = interaction.data.options;
-    console.log(interaction.data.options);
 
     switch (command) {
         case setup.HELP_COMMAND:
@@ -192,9 +185,6 @@ bot.on('messageReactionAdd', (reaction, user) => {
                 }
             }).catch(console.log);
         }
-        //console.log(reactions);
-        //console.log(activeReactions);
-
     }
     function isReactedBy(nickname) {return reaction.message.guild.members.cache.get(user.id).nickname === nickname}
 });
@@ -235,8 +225,6 @@ bot.on('messageReactionRemove', (reaction, user) => {
                     }
             }).catch(console.log);
         }
-        //console.log(reactions);
-        //console.log(activeReactions);
     }
 
     function isUnreactedBy(nickname) {return reaction.message.guild.members.cache.get(user.id).nickname === nickname}
@@ -274,7 +262,6 @@ bot.on('messageReactionRemoveEmoji', (reaction) => {
 });
 
 bot.on('messageDelete' , (message) => {
-    //if (message.author.id !== bot.user.id)
     try {
         console.log(`${message.createdAt.getHours()}:${message.createdAt.getMinutes()}:${message.createdAt.getSeconds()} ${message.author.tag}: ${message.content}`);
     } catch(e) {

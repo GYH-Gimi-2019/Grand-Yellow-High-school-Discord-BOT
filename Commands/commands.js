@@ -7,7 +7,6 @@ module.exports = {
     roles : [],
     guilds : [],
     execute(interaction, args, setup, commands, prefix, bot) {
-        console.log("TEST");
         let Embed;
         if (!args) {
             Embed = new Discord.MessageEmbed()
@@ -104,7 +103,6 @@ module.exports = {
 
 
         function replace(i, type) {
-            console.log(commands[type][i].name);
             switch (commands[type][i].name) {
                 
             }

@@ -184,8 +184,6 @@ module.exports = {
                 break;
             case "new":
                 characters = args[0].options[7].value.split("><").join(">><<").split("><");
-                console.log(args[0].options[7].value);
-                console.log(characters);
                 for (let i = 3; i < 7; i++) {
                     switch (i) {
                         case 3:
@@ -232,7 +230,6 @@ module.exports = {
                         return;
                     }
                 }
-                //message.channel.messages.fetch(setup.VOICES_MESSAGE).then(msg => {if(msg) msg.unpin();});
                 const season = args[0].options[0].value;
                 const episode = args[0].options[1].value;
                 const deadline = new Date(args[0].options[2].value, args[0].options[3].value-1, args[0].options[4].value, args[0].options[5].value, args[0].options[6].value, 0, 0);
@@ -242,7 +239,6 @@ module.exports = {
                 }
                 const Embed = new Discord.MessageEmbed()
                     .setTitle(`S${season}E${episode} voices`)
-                    //.addField(`Deadline: ${deadline.getDate() < 10 ? 0 : ""}${deadline.getDate()}/${deadline.getMonth()+1}/${deadline.getFullYear()} ${deadline.getHours()}:${deadline.getMinutes() < 10 ? 0 : ""}${deadline.getMinutes()}`, embedString)
                     .setDescription(embedString)
                     .setColor('RANDOM')
                     .setFooter("Deadline")

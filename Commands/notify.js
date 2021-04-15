@@ -31,12 +31,4 @@ module.exports = {
             });
         })
     }
-
-    /*if (args[1] === "db") {
-    const users = database.MISSING_VOICE.NAMES;
-    let usr;
-    for (let i = 0; i < users.length; i++) {
-        usr = bot.guilds.cache.get(interaction.guild_id).members.cache.find(user => user.nickname === users[i].NAME);
-        if (!users[i].DONE) usr.send(`Hurry up with recording your voice for S${database.MISSING_VOICE.SEASON}E${database.MISSING_VOICE.EPISODE}!`);
-    }*/
 }
